@@ -58,7 +58,7 @@ class CreditsState extends MusicBeatState
 		add(versionShit);
 
 		#if MODS_ALLOWED
-		var path:String = 'modsList.txt';
+		var path:String = SUtil.getPath() + 'modsList.txt';
 		if(FileSystem.exists(path))
 		{
 			var leMods:Array<String> = CoolUtil.coolTextFile(path);

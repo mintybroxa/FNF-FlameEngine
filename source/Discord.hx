@@ -1,6 +1,8 @@
 package;
 
+#if sys
 import Sys.sleep;
+#end
 import discord_rpc.DiscordRpc;
 
 #if LUA_ALLOWED
@@ -16,20 +18,20 @@ class DiscordClient
 	public function new()
 	{
 		trace("Discord Client starting...");
-		
 		DiscordRpc.start({
-			clientID: "963344162600656947",
+			clientID: "863222024192262205",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
 		});
-		
 		trace("Discord Client started.");
 
 		while (true)
 		{
 			DiscordRpc.process();
+			#if sys
 			sleep(2);
+			#end
 			//trace("Discord Client Update");
 		}
 
@@ -47,7 +49,7 @@ class DiscordClient
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "OS Engine — Modded Psych Engine"
+			largeImageText: "Psych Engine"
 		});
 	}
 
@@ -84,11 +86,11 @@ class DiscordClient
 			details: details,
 			state: state,
 			largeImageKey: 'icon',
-			largeImageText: "Engine Version: " + MainMenuState.osEngineVersion,
+			largeImageText: "Engine Version: " + MainMenuState.psychEngineVersion,
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
-            endTimestamp : Std.int(endTimestamp / 1000)
+			endTimestamp : Std.int(endTimestamp / 1000)
 		});
 
 		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
