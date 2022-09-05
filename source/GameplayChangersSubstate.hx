@@ -10,7 +10,7 @@ import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
-import flixel.addons.transition.FlxTransitionableState.skipNextTransOut
+import flixel.addons.transition.FlxTransitionableState.skipNextTransOut;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
