@@ -646,17 +646,18 @@ class StageEditorState extends MusicBeatState
 		var data:String = Json.stringify(json, "\t");
 
 		if (data.length > 0)
-            {
+    {
 			#if android
 			SUtil.saveContent("object", ".json", data.trim());
 			#else
-                _file = new FileReference();
-                _file.addEventListener(Event.COMPLETE, onSaveComplete);
-                _file.addEventListener(Event.CANCEL, onSaveCancel);
-                _file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-                _file.save(data, "object.json");
-            }
+      _file = new FileReference();
+      _file.addEventListener(Event.COMPLETE, onSaveComplete);
+      _file.addEventListener(Event.CANCEL, onSaveCancel);
+      _file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+      _file.save(data, "object.json");
+      #end
     }
+ }
     
     
     override function update(elapsed:Float) {
