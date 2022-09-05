@@ -617,11 +617,15 @@ class StageEditorState extends MusicBeatState
 
 		if (data.length > 0)
             {
+			#if android
+			SUtil.saveContent("stage", ".json", data.trim());
+			#else
                 _file = new FileReference();
                 _file.addEventListener(Event.COMPLETE, onSaveComplete);
                 _file.addEventListener(Event.CANCEL, onSaveCancel);
                 _file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
                 _file.save(data, "stage.json");
+                #end
             }
     }
 
@@ -686,7 +690,7 @@ class StageEditorState extends MusicBeatState
 
         if(!charDropDown.dropPanel.visible) {
 
-            if (FlxG.keys.justPressed.ESCAPE) {
+            if (FlxG.keys.justPressed.ESCAPE #if android || FlxG.android.justReleased.BACK #end) {
                 MusicBeatState.switchState(new editors.MasterEditorMenu());
                 FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				FlxG.mouse.visible = false;

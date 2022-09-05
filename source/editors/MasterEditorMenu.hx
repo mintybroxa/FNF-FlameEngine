@@ -21,12 +21,12 @@ using StringTools;
 class MasterEditorMenu extends MusicBeatState
 {
 	var options:Array<String> = [
-		//'Week Editor',
-		//'Menu Character Editor',
-		//'Dialogue Editor',
-		//'Dialogue Portrait Editor',
-		//'Character Editor',
-		//'Chart Editor',
+		'Week Editor',
+		'Menu Character Editor',
+		'Dialogue Editor',
+		'Dialogue Portrait Editor',
+		'Character Editor',
+		'Chart Editor',
 		'Stage Editor (ALPHA)'
 	];
 	private var grpTexts:FlxTypedGroup<Alphabet>;
@@ -84,7 +84,7 @@ class MasterEditorMenu extends MusicBeatState
 		FlxG.mouse.visible = false;
 		
     #if android
-  	addVirtualPad(UP_DOWN, A_B);
+  	addVirtualPad(FULL, A_B);
     #end
 
 		super.create();
