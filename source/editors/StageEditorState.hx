@@ -454,7 +454,7 @@ class StageEditorState extends MusicBeatState
 
 		#if MODS_ALLOWED
 		characterList = [];
-		var directories:Array<String> = [Paths.mods('characters/'), Paths.mods(Paths.currentModDirectory + '/characters/'), Paths.getPreloadPath('characters/')];
+		var directories:Array<String> = [Paths.mods('characters/'), Paths.mods(Paths.currentModDirectory + '/characters/'), SUtil.getPath() + Paths.getPreloadPath('characters/')];
 		for(mod in Paths.getGlobalMods())
 			directories.push(Paths.mods(mod + '/characters/'));
 		for (i in 0...directories.length) {
@@ -490,7 +490,7 @@ class StageEditorState extends MusicBeatState
         #if MODS_ALLOWED
         var path:String = Paths.modFolders(characterPath);
         if (!FileSystem.exists(path)) {
-            path = Paths.getPreloadPath(characterPath);
+            path = SUtil.getPath() + Paths.getPreloadPath(characterPath);
         }
 
         if (!FileSystem.exists(path))
@@ -499,7 +499,7 @@ class StageEditorState extends MusicBeatState
         if (!Assets.exists(path))
         #end
         {
-            path = Paths.getPreloadPath('characters/bf.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+            path = SUtil.getPath() + Paths.getPreloadPath('characters/bf.json'); //If a character couldn't be found, change him to BF just to prevent a crash
         }
 
         #if MODS_ALLOWED
@@ -647,6 +647,9 @@ class StageEditorState extends MusicBeatState
 
 		if (data.length > 0)
             {
+			#if android
+			SUtil.saveContent("object", ".json", data.trim());
+			#else
                 _file = new FileReference();
                 _file.addEventListener(Event.COMPLETE, onSaveComplete);
                 _file.addEventListener(Event.CANCEL, onSaveCancel);
