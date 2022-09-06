@@ -52,7 +52,12 @@ class CreditsState extends MusicBeatState
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		var versionShit:FlxText = new FlxText(FlxG.width * 0.7, FlxG.height - 24, 0, "Press CTRL for Official Discord Server", 12);
+		#if android
+			var versionShit:FlxText = new FlxText(FlxG.width * 0.7, FlxG.height - 24, 0, "Press C for Official Discord Server", 12);
+			#else
+			var versionShit:FlxText = new FlxText(FlxG.width * 0.7, FlxG.height - 24, 0, "Press CTRL for Official Discord Server", 12);
+		#end
+
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -173,7 +178,7 @@ class CreditsState extends MusicBeatState
 		changeSelection();
 		
     #if android
-  	addVirtualPad(UP_DOWN, A_B);
+  	addVirtualPad(UP_DOWN, A_B_C);
     #end
 		
 		super.create();
@@ -188,7 +193,7 @@ class CreditsState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 		
-		if (FlxG.keys.pressed.CONTROL) {
+		if (FlxG.keys.pressed.CONTROL #if android || virtualPad.buttonC.justPressed #end) {
 			CoolUtil.browserLoad('https://discord.gg/5vEHTRjNck');
 		}
 
