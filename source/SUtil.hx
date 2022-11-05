@@ -1,16 +1,14 @@
 package;
 
 #if android
-import android.Hardware;
 import android.Permissions;
 import android.os.Build;
 import android.os.Environment;
+import android.widget.Toast;
 #end
 import flash.system.System;
 import flixel.FlxG;
-import haxe.CallStack.StackItem;
 import haxe.CallStack;
-import haxe.io.Path;
 import openfl.Lib;
 import openfl.events.UncaughtErrorEvent;
 import openfl.utils.Assets;
@@ -44,7 +42,7 @@ class SUtil
 				 * Basically for now i can't force the app to stop while its requesting a android permission, so this makes the app to stop while its requesting the specific permission
 				 */
 				Lib.application.window.alert('If you accepted the permissions you are all good!' + "\nIf you didn't then expect a crash"
-					+ 'Press Ok to see what happens',
+					+ '\nPress Ok to see what happens',
 					'Permissions?');
 			}
 			else
@@ -160,7 +158,7 @@ class SUtil
 			}
 			#if android
 			catch (e:Dynamic)
-			Hardware.toast("Error!\nClouldn't save the crash dump because:\n" + e, ToastType.LENGTH_LONG);
+			Toast.makeText("Error!\nClouldn't save the crash dump because:\n" + e, Toast.LENGTH_LONG);
 			#end
 			#end
 
@@ -181,12 +179,12 @@ class SUtil
 
 			File.saveContent(SUtil.getPath() + 'saves/' + fileName + fileExtension, fileData);
 			#if android
-			Hardware.toast("File Saved Successfully!", ToastType.LENGTH_LONG);
+			Toast.makeText("File Saved Successfully!", Toast.LENGTH_LONG);
 			#end
 		}
 		#if android
 		catch (e:Dynamic)
-		Hardware.toast("Error!\nClouldn't save the file because:\n" + e, ToastType.LENGTH_LONG);
+		Toast.makeText("Error!\nClouldn't save the file because:\n" + e, Toast.LENGTH_LONG);
 		#end
 	}
 
@@ -199,7 +197,7 @@ class SUtil
 		}
 		#if android
 		catch (e:Dynamic)
-		Hardware.toast("Error!\nClouldn't copy the file because:\n" + e, ToastType.LENGTH_LONG);
+		Toast.makeText("Error!\nClouldn't copy the file because:\n" + e, Toast.LENGTH_LONG);
 		#end
 	}
 	#end
