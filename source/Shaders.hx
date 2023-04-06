@@ -36,9 +36,9 @@ class BuildingShader extends FlxShader
     void main()
     {
 
-      vec4 color = flixel_texture2D(bitmap,openfl_TextureCoordv);
-      if (color.a > 0.0)
-        color-=alphaShit;
+      vec4 col = flixel_texture2D(bitmap,openfl_TextureCoordv);
+      if (col.a > 0.0)
+        col-=alphaShit;
 
       gl_FragColor = color;
     }
@@ -99,7 +99,7 @@ class ScanlineEffect extends Effect
 	public var shader:Scanline;
 	public function new (lockAlpha){
 		shader = new Scanline();
-		shader.data.lockAlpha.value = [lockAlpha];
+		shader.data.lockAlpha.value = false;
 	}
 	
 	
@@ -111,7 +111,7 @@ class Scanline extends FlxShader
 	public function new(){super('
 		////pragma header
 		const float scale = 1.0;
-	uniform bool lockAlpha = false;
+	uniform bool lockAlpha;
 		void main()
 		{
 			if (mod(floor(openfl_TextureCoordv.y * openfl_TextureSize.y / scale), 2.0) == 0.0 ){
@@ -133,8 +133,8 @@ class TiltshiftEffect extends Effect{
 	public var shader:Tiltshift;
 	public function new (blurAmount:Float, center:Float){
 		shader = new Tiltshift();
-		shader.data.bluramount.value = [blurAmount];
-		shader.data.center.value = [center];
+		shader.data.bluramount.value = [1.0];
+		shader.data.center.value = [1.0];
 	}
 	
 	
@@ -181,10 +181,10 @@ class Tiltshift extends FlxShader
 		 
 		// I am hardcoding the constants like a jerk
 			
-		uniform float bluramount  = 1.0;
-		uniform float center      = 1.0;
-		const float stepSize    = 0.004;
-		const float steps       = 3.0;
+		uniform float bluramount;
+		uniform float center;
+		const float stepSize = 0.004;
+		const float steps = 3.0;
 		 
 		const float minOffs     = (float(steps-1.0)) / -2.0;
 		const float maxOffs     = (float(steps-1.0)) / +2.0;
@@ -264,9 +264,10 @@ class GrainEffect extends Effect {
 	public var shader:Grain;
 	public function new (grainsize, lumamount,lockAlpha){
 		shader = new Grain();
-		shader.data.lumamount.value = [lumamount];
-		shader.data.grainsize.value = [grainsize];
-		shader.data.lockAlpha.value = [lockAlpha];
+		shader.data.lumamount.value = [1.0];
+		shader.data.grainsize.value = [1.6];
+		shader.data.lockAlpha.value = false;
+		shader.data.coloramount.value = [0.6];
 		shader.data.uTime.value = [FlxG.random.float(0,8)];
 		PlayState.instance.shaderUpdates.push(update);
 	}
@@ -312,10 +313,10 @@ class Grain extends FlxShader
 
 		const float grainamount = 0.05; //grain amount
 		bool colored = false; //colored noise?
-		uniform float coloramount = 0.6;
-		uniform float grainsize = 1.6; //grain particle size (1.5 - 2.5)
-		uniform float lumamount = 1.0; //
-	uniform bool lockAlpha = false;
+		uniform float coloramount;
+		uniform float grainsize; //grain particle size (1.5 - 2.5)
+		uniform float lumamount; //
+	uniform bool lockAlpha;
 
 		//a random texture generator, but you can also use a pre-computed perturbation texture
 	
@@ -514,7 +515,7 @@ class VCRDistortionShader extends FlxShader // https://www.shadertoy.com/view/ld
       	vec2 look = uv;
         if(distortionOn){
         	float window = 1./(1.+20.*(look.y-mod(iTime/4.,1.))*(look.y-mod(iTime/4.,1.)));
-        	look.x = look.x + (sin(look.y*10. + iTime)/50.*onOff(4.,4.,.3)*(1.+cos(iTime*80.))*window)*(glitchModifier*2);
+        	look.x = look.x + (sin(look.y*10. + iTime)/50.*onOff(4.,4.,.3)*(1.+cos(iTime*80.))*window)*(glitchModifier*2.);
         	float vShift = 0.4*onOff(2.,3.,.9)*(sin(iTime)*sin(iTime*20.) +
         										 (0.5 + 0.1*sin(iTime*200.)*cos(iTime)));
         	look.y = mod(look.y + vShift*glitchModifier, 1.);
@@ -570,6 +571,7 @@ class VCRDistortionShader extends FlxShader // https://www.shadertoy.com/view/ld
     }
     void main()
     {
+      #pragma body
     	vec2 uv = openfl_TextureCoordv;
       vec2 curUV = screenDistort(uv);
     	uv = scandistort(curUV);
@@ -597,8 +599,8 @@ class VCRDistortionShader extends FlxShader // https://www.shadertoy.com/view/ld
 
       gl_FragColor = mix(video,vec4(noise(uv * 75.)),.05);
 
-      if(curUV.x<0 || curUV.x>1 || curUV.y<0 || curUV.y>1){
-        gl_FragColor = vec4(0,0,0,0);
+      if(curUV.x<0. || curUV.x>1. || curUV.y<0. || curUV.y>1.){
+        gl_FragColor = vec4(0.,0.,0.,0.);
       }
 
     }
@@ -613,7 +615,7 @@ class ThreeDEffect extends Effect{
 	
 	public var shader:ThreeDShader = new ThreeDShader();
 	public function new(xrotation:Float=0,yrotation:Float=0,zrotation:Float=0,depth:Float=0){
-		shader.data.xrot.value = [xrotation];
+		shader.data.xrot.value = [0.0];
 		shader.data.yrot.value = [yrotation];
 		shader.data.zrot.value = [zrotation];
 		shader.data.dept.value = [depth];
@@ -627,12 +629,12 @@ class ThreeDEffect extends Effect{
 class ThreeDShader extends FlxShader{
 	public function new(){super('
 	////pragma header
-	uniform float xrot = 0.0;
-	uniform float yrot = 0.0;
-	uniform float zrot = 0.0;
-	uniform float dept = 0.0;
-	float alph = 0;
-float plane( in vec3 norm, in vec3 po, in vec3 ro, in vec3 rd ) {
+	uniform float xrot;
+	uniform float yrot;
+	uniform float zrot;
+	uniform float dept;
+	float alph = 0.;
+float plane(in vec3 norm, in vec3 po, in vec3 ro, in vec3 rd) {
     float de = dot(norm, rd);
     de = sign(de)*max( abs(de), 0.001);
     return dot(norm, po-ro)/de;
@@ -652,7 +654,7 @@ vec2 raytraceTexturedQuad(in vec3 rayOrigin, in vec3 rayDirection, in vec3 quadC
     //--------------------------------------
     
     vec3 right = RotationMatrix * vec3(quadDimensions.x, 0.0, 0.0);
-    vec3 up = RotationMatrix * vec3(0, quadDimensions.y, 0);
+    vec3 up = RotationMatrix * vec3(0., quadDimensions.y, 0.);
     vec3 normal = cross(right, up);
     normal /= length(normal);
     
@@ -669,7 +671,7 @@ void main() {
     //Screen UV goes from 0 - 1 along each axis
     vec2 screenUV = openfl_TextureCoordv;
     vec2 p = (2.0 * screenUV) - 1.0;
-    float screenAspect = 1280/720;
+    float screenAspect = 1280/720.;
     p.x *= screenAspect;
     
     //Normalized Ray Dir
@@ -681,7 +683,7 @@ void main() {
     vec3 planeRotation = vec3(xrot, yrot, zrot);//this the shit you needa change
     vec2 planeDimension = vec2(-screenAspect, 1.0);
     
-    vec2 uv = raytraceTexturedQuad(vec3(0), dir, planePosition, planeRotation, planeDimension);
+    vec2 uv = raytraceTexturedQuad(vec3(0.), dir, planePosition, planeRotation, planeDimension);
 	
     //If we hit the rectangle, sample the texture
     if (abs(uv.x - 0.5) < 0.5 && abs(uv.y - 0.5) < 0.5) {
@@ -710,8 +712,8 @@ class BloomEffect extends Effect{
 	
 	public var shader:BloomShader = new BloomShader();
 	public function new(blurSize:Float, intensity:Float){
-		shader.data.blurSize.value = [blurSize];
-		shader.data.intensity.value = [intensity];
+		shader.data.blurSize.value = [1.0/512.0];
+		shader.data.intensity.value = [0.35];
 		
 	}
 	
@@ -726,11 +728,11 @@ class BloomShader extends FlxShader{
 	
 	////pragma header
 	
-	uniform float intensity = 0.35;
-	uniform float blurSize = 1.0/512.0;
+	uniform float intensity;
+	uniform float blurSize;
 void main()
 {
-   vec4 sum = vec4(0);
+   vec4 sum = vec4(0.);
    vec2 texcoord = openfl_TextureCoordv;
    int j;
    int i;
@@ -1084,7 +1086,7 @@ class DistortBGShader extends FlxShader
 
     vec4 makeBlack(vec4 pt)
     {
-        return vec4(0, 0, 0, pt.w);
+        return vec4(0., 0., 0., pt.w);
     }
 
     void main()
@@ -1128,11 +1130,11 @@ class PulseShader extends FlxShader
         if (uampmul > 0.0)
         {
             float offsetX = sin(pt.y * uFrequency + uTime * uSpeed);
-            float offsetY = sin(pt.x * (uFrequency * 2) - (uTime / 2) * uSpeed);
-            float offsetZ = sin(pt.z * (uFrequency / 2) + (uTime / 3) * uSpeed);
-            pt.x = mix(pt.x,sin(pt.x / 2 * pt.y + (5 * offsetX) * pt.z),uWaveAmplitude * uampmul);
-            pt.y = mix(pt.y,sin(pt.y / 3 * pt.z + (2 * offsetZ) - pt.x),uWaveAmplitude * uampmul);
-            pt.z = mix(pt.z,sin(pt.z / 6 * (pt.x * offsetY) - (50 * offsetZ) * (pt.z * offsetX)),uWaveAmplitude * uampmul);
+            float offsetY = sin(pt.x * (uFrequency * 2.) - (uTime / 2.) * uSpeed);
+            float offsetZ = sin(pt.z * (uFrequency / 2.) + (uTime / 3.) * uSpeed);
+            pt.x = mix(pt.x,sin(pt.x / 2. * pt.y + (5. * offsetX) * pt.z),uWaveAmplitude * uampmul);
+            pt.y = mix(pt.y,sin(pt.y / 3. * pt.z + (2. * offsetZ) - pt.x),uWaveAmplitude * uampmul);
+            pt.z = mix(pt.z,sin(pt.z / 6. * (pt.x * offsetY) - (50. * offsetZ) * (pt.z * offsetX)),uWaveAmplitude * uampmul);
         }
 
 
