@@ -162,7 +162,10 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		changeSelection();
 		reloadCheckboxes();
 
-		//cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+                if (PauseSubState.fromPause) {
+		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+              }
+
 		#if android
 		addVirtualPad(LEFT_FULL, A_B_C);
 		addPadCamera();
