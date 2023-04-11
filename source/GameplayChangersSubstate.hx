@@ -190,10 +190,14 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			#if android
 			flixel.addons.transition.FlxTransitionableState.skipNextTransOut = true;
 			FlxG.resetState();
+                        if (PauseSubState.fromPause == true) {
                         PauseSubState.fromPause = false;
+                      }
 			#else
 			close();
+                        if (PauseSubState.fromPause == true) {
                         PauseSubState.fromPause = false;
+                      }
 			#end
 			ClientPrefs.saveSettings();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
