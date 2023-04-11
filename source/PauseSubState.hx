@@ -33,6 +33,7 @@ class PauseSubState extends MusicBeatSubstate
 	//var botplayText:FlxText;
 
 	public static var songName:String = '';
+        public static var fromPause:Bool = false;
 
 	public function new(x:Float, y:Float)
 	{
@@ -263,6 +264,7 @@ class PauseSubState extends MusicBeatSubstate
 					MusicBeatState.switchState(new options.OptionsState());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				case 'Gameplay Changers':
+                                        fromPause = true;
 					close();
 					PlayState.instance.openChangersMenu();
 				case "Exit to menu":
