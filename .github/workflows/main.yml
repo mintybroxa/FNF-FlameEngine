@@ -1,28 +1,26 @@
-name: Build Android
+name: Build Android (raw upload)
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  buildAndroid:
-    name: Build Android
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Android NDK
+      - name: Setup NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
           ndk-version: r21e
 
-      - name: Setup Java JDK
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -36,22 +34,21 @@ jobs:
         with:
           haxe-version: 4.2.5
 
-      - name: Install Haxelib
+      - name: Install Haxelibs
         run: |
-          haxelib --quiet setup /home/runner/haxelib
-          haxelib --quiet install hxcpp > /dev/null
-          haxelib --quiet install lime 7.9.0
-          haxelib --quiet install openfl 9.1.0
-          haxelib --quiet --never install flixel 4.11.0
-          haxelib --quiet run lime setup flixel
-          haxelib --quiet install flixel-tools
-          haxelib --quiet install flixel-ui
-          haxelib --quiet install hscript
-          haxelib --quiet install flixel-addons 2.11.0
-          haxelib --quiet git hxCodec https://github.com/SPLCoding/hxCodec-but-it-works-xd.git
-          haxelib --quiet git linc_luajit https://github.com/Sirox228/linc_luajit.git
-          haxelib --quiet git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
-          haxelib list
+          haxelib setup /home/runner/haxelib
+          haxelib install hxcpp
+          haxelib install lime 7.9.0
+          haxelib install openfl 9.1.0
+          haxelib install flixel 4.11.0
+          haxelib run lime setup flixel
+          haxelib install flixel-ui
+          haxelib install flixel-tools
+          haxelib install flixel-addons 2.11.0
+          haxelib install hscript
+          haxelib git hxCodec https://github.com/SPLCoding/hxCodec-but-it-works-xd.git
+          haxelib git linc_luajit https://github.com/Sirox228/linc_luajit.git
+          haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
 
       - name: Setup Lime
         run: |
@@ -63,17 +60,16 @@ jobs:
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
-      - name: Compile
+      - name: Compile Game
         run: haxelib run lime build android -release
 
-      - name: Create artifacts folder
+      - name: Prepare Artifact
         run: |
-          mkdir -p artifacts
-          cp export/release/android/bin/app/build/outputs/apk/debug/*.apk artifacts/ || echo "No APK found"
+          mkdir -p artifact
+          cp export/release/android/bin/app/build/outputs/apk/debug/*.apk artifact/ || echo "APK not found"
+          zip -r android_build.zip artifact/
 
-      # Upload usando ação alternativa confiável
-      - name: Upload APK (backup method)
-        uses: dawidd6/action-upload-artifact@v2
+      - name: Upload Zip (raw)
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: androidBuild
-          path: artifacts/
+          path: .
