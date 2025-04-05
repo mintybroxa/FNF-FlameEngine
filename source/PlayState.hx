@@ -2472,17 +2472,18 @@ class PlayState extends MusicBeatState
 
 	public function updateScore(miss:Bool = false)
 	{
-		if(ratingName == '?') {
-			scoreTxt.text = 'Score: ' + songScore 
-			+ ' | Combo Breaks: ' + songMisses 
-			+ ' | Average: ?'
-			+ ' | Accuracy: ' + ratingName;
-		} else {
-			scoreTxt.text = 'Score: ' + songScore 
-			+ ' | Combo Breaks: ' + songMisses 
-			+ ' | Average: ' + Math.round(averageMs) + 'ms'
-			+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%' 
-			+ ' | ' + ratingName + ' [' + ratingFC + ']';
+		if(ratingName == '?')
+{
+	scoreTxt.text = 'Score: ' + songScore + ' // Combo Breaks: ' + songMisses + ' // Accuracy: N/A ' + ' // Health: ' + Math.floor(health * 50) + '%';
+}
+else
+{
+	scoreTxt.text = 'Score: ' + songScore
+		+ ' // Combo Breaks: ' + songMisses
+		+ ' // Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '% (' + ratingName + ' - ' + ratingFC + ')'
+		+ ' // Health: ' + Math.floor(health * 50) + '%';
+}
+[' + ratingFC + ']';
 		}
 
 		if(ClientPrefs.scoreZoom && !miss && !cpuControlled)
